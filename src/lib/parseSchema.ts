@@ -1,58 +1,48 @@
-import {
-    buildSchema,
-    GraphQLSchema,
-    isObjectType,
-} from "graphql";
-import type { GraphEdge, GraphNode } from "../types/graph";
+import { buildSchema, GraphQLObjectType, GraphQLSchema, getNamedType, isObjectType } from "graphql";
+import type { Edge, Node } from "reactflow";
 
 export function parseSchema(schemaString: string): {
-  nodes: GraphNode[];
-  edges: GraphEdge[];
+    nodes: Node[];
+    edges: Edge[];
 } {
-  const schema: GraphQLSchema = buildSchema(schemaString);
-  const typeMap = schema.getTypeMap();
+    const schema: GraphQLSchema = buildSchema(schemaString);
+    const typeMap = schema.getTypeMap();
 
-  const nodes: GraphNode[] = [];
-  const edges: GraphEdge[] = [];
+    const nodes: Node[] = [];
+    const edges: Edge[] = [];
 
-  const objectTypeNames = new Set<string>();
+    const objectTypes = new Map<string, GraphQLObjectType>();
 
-  // First pass: collect valid object types
-  Object.values(typeMap).forEach((type) => {
-    if (!isObjectType(type) || type.name.startsWith("__")) return;
+    // ✅ 1. Collect only object types
+    Object.values(typeMap).forEach(type => {
+        if (!isObjectType(type) || type.name.startsWith("__")) return;
 
-    objectTypeNames.add(type.name);
+        objectTypes.set(type.name, type);
 
-    nodes.push({
-      id: type.name,
-      data: { label: type.name },
-      position: { x: 0, y: 0 },
+        nodes.push({
+            id: type.name,
+            data: { label: type.name },
+            position: { x: 0, y: 0 },
+        });
     });
-  });
 
-  // Second pass: create edges only between known object types
-  Object.values(typeMap).forEach((type) => {
-    if (!isObjectType(type) || type.name.startsWith("__")) return;
+    // ✅ 2. Create edges ONLY between object types
+    objectTypes.forEach(type => {
+        const fields = type.getFields();
 
-    console.log(type);
+        Object.values(fields).forEach(field => {
+            const namedType = getNamedType(field.type); // 👈 IMPORTANT
+            const targetTypeName = namedType.name;
 
-    const fields = type.getFields();
+            if (!objectTypes.has(targetTypeName)) return;
 
-    Object.values(fields).forEach((field) => {
-      const rawType = field.type.toString();
-      const cleanType = rawType.replace(/[[\]!]/g, "");
-
-      console.log({rawType, cleanType});
-
-      if (!objectTypeNames.has(cleanType)) return; // 👈 IMPORTANT
-
-      edges.push({
-        id: `${type.name}-${field.name}`,
-        source: type.name,
-        target: cleanType,
-      });
+            edges.push({
+                id: `${type.name}-${field.name}-${targetTypeName}`,
+                source: type.name,
+                target: targetTypeName,
+            });
+        });
     });
-  });
 
-  return { nodes, edges };
+    return { nodes, edges };
 }

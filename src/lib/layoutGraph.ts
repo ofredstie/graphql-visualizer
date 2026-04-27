@@ -1,28 +1,23 @@
-import dagre from "dagre";
-import type { GraphEdge, GraphNode } from "../types/graph";
+import type { Edge, Node } from '@xyflow/react';
+import dagre from 'dagre';
 
-export function layoutGraph(
-  nodes: GraphNode[],
-  edges: GraphEdge[]
-): GraphNode[] {
-  const g = new dagre.graphlib.Graph();
-  g.setGraph({ rankdir: "LR" });
+export function layoutGraph(nodes: Node[], edges: Edge[]): Node[] {
+  const dagreGraph = new dagre.graphlib.Graph();
+  dagreGraph.setDefaultEdgeLabel(() => ({}));
+  dagreGraph.setGraph({ rankdir: 'TB' });
 
   nodes.forEach((node) => {
-    g.setNode(node.id, { width: 180, height: 60 });
+    dagreGraph.setNode(node.id, { width: 180, height: 60 });
   });
 
   edges.forEach((edge) => {
-    g.setEdge(edge.source, edge.target);
+    dagreGraph.setEdge(edge.source, edge.target);
   });
 
-  console.log(nodes);
-  console.log(edges);
-
-  dagre.layout(g);
+  dagre.layout(dagreGraph);
 
   return nodes.map((node) => {
-    const pos = g.node(node.id);
+    const pos = dagreGraph.node(node.id);
     return {
       ...node,
       position: {
