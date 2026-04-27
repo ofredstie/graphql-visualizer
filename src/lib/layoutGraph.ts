@@ -1,28 +1,50 @@
-import dagre from "dagre";
+import ELK from "elkjs/lib/elk.bundled.js";
 import type { Edge, Node } from "reactflow";
 
-export function layoutGraph(nodes: Node[], edges: Edge[]): Node[] {
-    const dagreGraph = new dagre.graphlib.Graph();
-    dagreGraph.setDefaultEdgeLabel(() => ({}));
-    dagreGraph.setGraph({ rankdir: "TB" });
+const elk = new ELK();
 
-    nodes.forEach(node => {
-        dagreGraph.setNode(node.id, { width: 250, height: 180 });
-    });
+export async function layoutGraph(
+    nodes: Node[],
+    edges: Edge[],
+): Promise<Node[]> {
+    const graph = {
+        id: "root",
+        layoutOptions: {
+            "elk.algorithm": "layered",
+            "elk.direction": "DOWN",
 
-    edges.forEach(edge => {
-        dagreGraph.setEdge(edge.source, edge.target);
-    });
+            "elk.spacing.nodeNode": "80",
+            "elk.layered.spacing.nodeNodeBetweenLayers": "140",
+            "elk.spacing.edgeNode": "60",
 
-    dagre.layout(dagreGraph);
+            "elk.layered.crossingMinimization.strategy": "LAYER_SWEEP",
+        },
+
+        children: nodes.map(node => ({
+            id: node.id,
+            width: 260,
+            height: 220,
+        })),
+
+        edges: edges.map(edge => ({
+            id: edge.id,
+            sources: [edge.source],
+            targets: [edge.target],
+        })),
+    };
+
+    const layoutedGraph = await elk.layout(graph);
 
     return nodes.map(node => {
-        const pos = dagreGraph.node(node.id);
+        const layoutNode = layoutedGraph.children?.find(
+            child => child.id === node.id,
+        );
+
         return {
             ...node,
             position: {
-                x: pos.x,
-                y: pos.y,
+                x: layoutNode?.x ?? 0,
+                y: layoutNode?.y ?? 0,
             },
         };
     });

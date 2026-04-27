@@ -10,11 +10,12 @@ function App() {
     const [nodes, setNodes] = useState<Node[]>([]);
     const [edges, setEdges] = useState<Edge[]>([]);
 
-    const handleSchema = (schema: string) => {
+    const handleSchema = async (schema: string) => {
         const { nodes, edges } = parseSchema(schema);
-        const layouted = layoutGraph(nodes, edges);
 
-        setNodes(layouted);
+        const layoutedNodes = await layoutGraph(nodes, edges);
+
+        setNodes(layoutedNodes);
         setEdges(edges);
     };
 
