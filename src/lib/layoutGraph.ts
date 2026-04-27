@@ -7,7 +7,7 @@ export function layoutGraph(nodes: Node[], edges: Edge[]): Node[] {
     dagreGraph.setGraph({ rankdir: "TB" });
 
     nodes.forEach(node => {
-        dagreGraph.setNode(node.id, { width: 180, height: 60 });
+        dagreGraph.setNode(node.id, { width: 250, height: 180 });
     });
 
     edges.forEach(edge => {
