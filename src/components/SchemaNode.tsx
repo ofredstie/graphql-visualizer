@@ -55,24 +55,28 @@ export const SchemaNode = ({ id, data }: NodeProps<SchemaNodeData>) => {
                     }}
                 >
                     {data.collapsed ? (
-                        <ExpandLess fontSize="small" />
+                        <ExpandLess fontSize="small" color="primary" />
                     ) : (
-                        <ExpandMore fontSize="small" />
+                        <ExpandMore fontSize="small" color="primary" />
                     )}
                 </IconButton>
             </Box>
 
-            <Divider />
+            {!data.collapsed && (
+                <>
+                    <Divider />
 
-            <Stack className="schema-node__body">
-                {data.fields.map(field => (
-                    <Box key={field.name} className="schema-node__row">
-                        <Typography className="schema-node__field">{field.name}</Typography>
+                    <Stack className="schema-node__body">
+                        {data.fields.map(field => (
+                            <Box key={field.name} className="schema-node__row">
+                                <Typography className="schema-node__field">{field.name}</Typography>
 
-                        <Typography className="schema-node__type">{field.type}</Typography>
-                    </Box>
-                ))}
-            </Stack>
+                                <Typography className="schema-node__type">{field.type}</Typography>
+                            </Box>
+                        ))}
+                    </Stack>
+                </>
+            )}
 
             <Handle position={Position.Bottom} type="source" />
         </Box>
