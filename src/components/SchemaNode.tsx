@@ -9,6 +9,7 @@ import {
     Divider,
     IconButton,
     Stack,
+    Tooltip,
     Typography,
 } from "@mui/material";
 import { useState } from "react";
@@ -30,29 +31,16 @@ type SchemaNodeData = {
 const getShorterNodeName = (name?: string) => {
     if (!name) return "";
 
-    if (name.startsWith("QueryResponseOfIEnumerableOf")) {
-        return name.replace("QueryResponseOfIEnumerableOf", "");
-    } else if (name.startsWith("QueryResponseOf")) {
-        return name.replace("QueryResponseOf", "");
-    } else if (name.startsWith("ResultSetOf")) {
-        return name.replace("ResultSetOf", "");
-    } else if (name.startsWith("Workprogrambudget_")) {
-        return name.replace("Workprogrambudget_", "WPB_");
-    } else if (name.startsWith("EmissionData_")) {
-        return name.replace("EmissionData_", "ED_");
-    } else if (name.startsWith("ProductionDataService_")) {
-        return name.replace("ProductionDataService_", "PDS_");
-    } else if (name.startsWith("MetricService_")) {
-        return name.replace("MetricService_", "MS_");
-    } else if (name.endsWith("Payload")) {
-        return name.replace("Payload", "");
+    if (name.length > 20) {
+        return name.substring(0, 20) + "...";
     } else {
         return name;
     }
 };
 
 export const SchemaNode = ({ id, data }: NodeProps<SchemaNodeData>) => {
-    const nodeName = getShorterNodeName(data.label);
+    const fullName = data.label;
+    const shortName = getShorterNodeName(fullName);
     const [isOpen, setIsOpen] = useState(false);
 
     const onClose = () => {
@@ -65,7 +53,9 @@ export const SchemaNode = ({ id, data }: NodeProps<SchemaNodeData>) => {
                 <Handle position={Position.Top} type="target" />
 
                 <Box className="schema-node__header">
-                    <Typography variant="h5">{nodeName}</Typography>
+                    <Tooltip title={data.label} disableHoverListener={fullName === shortName}>
+                        <Typography variant="h5">{shortName}</Typography>
+                    </Tooltip>
 
                     <IconButton
                         size="small"
@@ -90,7 +80,7 @@ export const SchemaNode = ({ id, data }: NodeProps<SchemaNodeData>) => {
                 <Handle position={Position.Bottom} type="source" />
             </Box>
             <Dialog open={isOpen} onClose={onClose}>
-                <DialogTitle>{nodeName} fields</DialogTitle>
+                <DialogTitle>{shortName} fields</DialogTitle>
                 <DialogContent>
                     <Stack>
                         {data.fields.map(field => (
