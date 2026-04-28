@@ -1,0 +1,192 @@
+"""
+====================
+COMMON SCALARS
+====================
+
+ISO-8601 formatted date (YYYY-MM-DD)
+"""
+scalar Date
+
+"""
+====================
+ENUMS
+====================
+"""
+enum Gender {
+    MALE
+    FEMALE
+    OTHER
+}
+
+"""
+====================
+CORE INTERFACES
+====================
+
+Common fields for all royal persons
+"""
+interface Person {
+    id: ID!
+    fullName: String!
+    birthDate: Date!
+    deathDate: Date
+    gender: Gender
+}
+
+"""
+====================
+DOMAIN TYPES
+====================
+
+A reigning monarch
+"""
+type Monarch implements Person {
+    id: ID!
+    fullName: String!
+    birthDate: Date!
+    deathDate: Date
+    gender: Gender
+
+    """
+    Ordinal number of the monarch (e.g. I, II, III)
+    """
+    regnalNumber: Int!
+
+    """
+    Name of the monarchy or kingdom
+    """
+    kingdom: String!
+
+    """
+    Start of reign
+    """
+    reignStart: Date!
+
+    """
+    End of reign (null if still reigning)
+    """
+    reignEnd: Date
+
+    """
+    Children of the monarch
+    """
+    children: [RoyalChild!]!
+}
+
+"""
+A child of a monarch
+"""
+type RoyalChild implements Person {
+    id: ID!
+    fullName: String!
+    birthDate: Date!
+    deathDate: Date
+    gender: Gender
+
+    """
+    Order in the line of succession
+    """
+    successionOrder: Int
+
+    """
+    Parent monarch
+    """
+    parent: Monarch!
+}
+
+"""
+====================
+INPUT TYPES
+====================
+
+Create a new monarch
+"""
+input CreateMonarchInput {
+    fullName: String!
+    birthDate: Date!
+    deathDate: Date
+    gender: Gender
+    regnalNumber: Int!
+    kingdom: String!
+    reignStart: Date!
+    reignEnd: Date
+}
+
+"""
+Create a child belonging to a monarch
+"""
+input CreateRoyalChildInput {
+    fullName: String!
+    birthDate: Date!
+    deathDate: Date
+    gender: Gender
+    successionOrder: Int
+    parentMonarchId: ID!
+}
+
+"""
+Update reign dates (e.g. abdication or correction)
+"""
+input UpdateReignInput {
+    reignStart: Date
+    reignEnd: Date
+}
+
+"""
+====================
+ROOT QUERY
+====================
+"""
+type Query {
+    """
+    List all monarchs (chronological order implied)
+    """
+    monarchs: [Monarch!]!
+
+    """
+    Fetch a specific monarch
+    """
+    monarch(id: ID!): Monarch
+
+    """
+    Fetch children of a monarch
+    """
+    childrenOfMonarch(monarchId: ID!): [RoyalChild!]!
+
+    """
+    Fetch a single royal child
+    """
+    royalChild(id: ID!): RoyalChild
+}
+
+"""
+====================
+ROOT MUTATION
+====================
+"""
+type Mutation {
+    """
+    Create a new monarch
+    """
+    createMonarch(input: CreateMonarchInput!): Monarch!
+
+    """
+    Update reign information for a monarch
+    """
+    updateMonarchReign(monarchId: ID!, input: UpdateReignInput!): Monarch!
+
+    """
+    Add a child to a monarch
+    """
+    createRoyalChild(input: CreateRoyalChildInput!): RoyalChild!
+
+    """
+    Update succession order of a child
+    """
+    updateSuccessionOrder(childId: ID!, successionOrder: Int!): RoyalChild!
+
+    """
+    Delete a royal child (historical correction)
+    """
+    deleteRoyalChild(childId: ID!): Boolean!
+}

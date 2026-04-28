@@ -1,0 +1,188 @@
+"""
+Common scalar types
+"""
+scalar Date
+scalar Year
+
+"""
+====================
+CORE DOMAIN TYPES
+====================
+
+Top-level container for official statistics
+(e.g. Population statistics, Economic statistics)
+"""
+type Dataset {
+    id: ID!
+    title: String!
+    description: String
+    topics: [Topic!]!
+}
+
+"""
+High-level statistical topic
+(e.g. Population, Economy, Education)
+"""
+type Topic {
+    id: ID!
+    name: String!
+    dataset: Dataset!
+    subTopics: [SubTopic!]!
+}
+
+"""
+More detailed classification under a topic
+(e.g. Population by age, Population by region)
+"""
+type SubTopic {
+    id: ID!
+    name: String!
+    topic: Topic!
+    statistics: [Statistic!]!
+}
+
+"""
+A measurable statistic
+(e.g. Total population, Unemployment rate)
+"""
+type Statistic {
+    id: ID!
+    name: String!
+    unit: String!
+    subTopic: SubTopic!
+    dimensions: [Dimension!]!
+
+    """
+    Retrieve observations for this statistic
+    """
+    observations(filters: ObservationFilterInput): [Observation!]!
+}
+
+"""
+====================
+DIMENSION MODEL
+====================
+
+Dimension such as Region, Age group, Gender
+"""
+type Dimension {
+    id: ID!
+    name: String!
+    description: String
+    levels: [DimensionLevel!]!
+}
+
+"""
+Specific value within a dimension
+(e.g. Oslo, 0–4 years, Female)
+"""
+type DimensionLevel {
+    id: ID!
+    code: String!
+    label: String!
+    dimension: Dimension!
+}
+
+"""
+====================
+OBSERVATIONS
+====================
+
+Actual measured value for a given year and set of dimensions
+"""
+type Observation {
+    id: ID!
+    statistic: Statistic!
+    year: Year!
+    value: Float!
+    dimensionLevels: [DimensionLevel!]!
+    createdAt: Date!
+    updatedAt: Date
+}
+
+"""
+====================
+INPUT TYPES
+====================
+
+Filter observations by year and dimension values
+"""
+input ObservationFilterInput {
+    yearFrom: Year
+    yearTo: Year
+    dimensionLevelIds: [ID!]
+}
+
+"""
+Create a new statistic
+"""
+input CreateStatisticInput {
+    name: String!
+    unit: String!
+    subTopicId: ID!
+    dimensionIds: [ID!]!
+}
+
+"""
+Create a new observation
+"""
+input CreateObservationInput {
+    statisticId: ID!
+    year: Year!
+    value: Float!
+    dimensionLevelIds: [ID!]!
+}
+
+"""
+====================
+ROOT QUERY
+====================
+"""
+type Query {
+    """
+    List all datasets
+    """
+    datasets: [Dataset!]!
+
+    """
+    Fetch a specific dataset
+    """
+    dataset(id: ID!): Dataset
+
+    """
+    List statistics under a subtopic
+    """
+    statistics(subTopicId: ID!): [Statistic!]!
+
+    """
+    Fetch observations for a statistic
+    """
+    observations(statisticId: ID!, filters: ObservationFilterInput): [Observation!]!
+}
+
+"""
+====================
+ROOT MUTATION
+====================
+"""
+type Mutation {
+    """
+    Create a new statistic
+    """
+    createStatistic(input: CreateStatisticInput!): Statistic!
+
+    """
+    Create a new observation
+    """
+    createObservation(input: CreateObservationInput!): Observation!
+
+    """
+    Update an existing observation value
+    """
+    updateObservation(id: ID!, value: Float!): Observation!
+
+    """
+    Delete an observation (e.g. correction or withdrawal)
+    """
+    deleteObservation(id: ID!): Boolean!
+}
