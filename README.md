@@ -49,7 +49,7 @@ npm -v
 Clone the repository and install dependencies:
 
 ```
-git clone <your-repository-url>
+git clone https://github.com/ofredstie/graphql-visualizer
 cd graphql-visualizer
 npm install
 ```
