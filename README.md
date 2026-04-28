@@ -1,73 +1,151 @@
-# React + TypeScript + Vite
+# GraphQL Visualizer
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A web application for visualizing **GraphQL schemas as interactive graphs**.  
+It helps developers explore types, fields, and relationships in complex GraphQL APIs through a node-based graph layout.
 
-Currently, two official plugins are available:
+Built with **React**, **TypeScript**, and **React Flow**, powered by **Vite**.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+---
 
-## React Compiler
+## ✨ Features
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- Visualize GraphQL schemas as graphs
+- Interactive node-based layout using React Flow
+- Automatic graph layout using Dagre / ELK
+- Modern UI with Material UI (MUI)
+- Fast development and build pipeline via Vite
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## 🧰 Tech Stack
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- **React** + **TypeScript**
+- **Vite** (development & build tooling)
+- **@xyflow/react (React Flow)** for graph visualization
+- **GraphQL** for schema parsing
+- **Material UI (MUI)** for UI components
+- **Dagre / ELK** for graph layout algorithms
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+---
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## ✅ Prerequisites
+
+Ensure the following are installed on your system:
+
+- **Node.js** ≥ 18  
+- **npm** (included with Node.js)
+
+Verify your setup:
+
+```
+node -v
+npm -v
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+---
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## 📦 Installation
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+Clone the repository and install dependencies:
+
 ```
+git clone <your-repository-url>
+cd graphql-visualizer
+npm install
+```
+
+---
+
+## 🚀 Running the App (Development)
+
+Start the development server with hot module replacement:
+
+```
+npm run dev
+```
+
+The application will be available at (usually):
+
+```
+http://localhost:5173
+```
+
+---
+
+## 🏗️ Building the App (Production)
+
+To create a production build:
+
+```
+npm run build
+```
+
+This performs:
+- TypeScript compilation
+- Vite production build
+
+The output is written to the `dist/` directory.
+
+---
+
+## 🔍 Previewing the Production Build
+
+To preview the production build locally:
+
+```
+npm run preview
+```
+
+---
+
+## 🧪 Linting & Type Checking
+
+Run TypeScript checks and lint the codebase:
+
+```
+npm run lint
+```
+
+---
+
+## 📁 Project Structure (High Level)
+
+```
+graphql-visualizer/
+├── src/              # Application source code
+├── public/           # Static assets
+├── dist/             # Production build output
+├── package.json      # Scripts and dependencies
+├── tsconfig*.json    # TypeScript configuration
+├── vite.config.ts    # Vite configuration
+└── README.md
+```
+
+---
+
+## 🚧 Project Status
+
+This project is under active development. APIs and UI may change.
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome!
+
+1. Fork the repository
+2. Create a feature branch
+3. Commit your changes
+4. Open a pull request
+
+---
+
+## 📄 License
+
+No license has been defined yet. Add a `LICENSE` file before publishing.
+
+---
+
+## 🙋‍♂️ Questions or Feedback
+
+Open an issue if you have questions, find bugs, or want to suggest improvements.
