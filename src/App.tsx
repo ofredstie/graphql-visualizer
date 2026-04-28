@@ -22,7 +22,11 @@ function App() {
 
         setAllNodes(graph.nodes);
         setAllEdges(graph.edges);
-        setCollapsed(new Set());
+
+        // Collapse every node that has at least one parent by default
+        const nodesWithParents = new Set<string>(graph.edges.map(edge => edge.target));
+
+        setCollapsed(nodesWithParents);
     };
 
     const toggleCollapse = (nodeId: string) => {
