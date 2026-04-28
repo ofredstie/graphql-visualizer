@@ -43,10 +43,6 @@ export const SchemaNode = ({ id, data }: NodeProps<SchemaNodeData>) => {
     const shortName = getShorterNodeName(fullName);
     const [isOpen, setIsOpen] = useState(false);
 
-    const onClose = () => {
-        setIsOpen(!isOpen);
-    };
-
     return (
         <>
             <Box className="schema-node">
@@ -57,47 +53,46 @@ export const SchemaNode = ({ id, data }: NodeProps<SchemaNodeData>) => {
                         <Typography variant="h5">{shortName}</Typography>
                     </Tooltip>
 
-                    <IconButton
-                        size="small"
+                    <Button
+                        variant="outlined"
                         onClick={event => {
                             event.stopPropagation();
                             data.onToggle?.(id);
                         }}
+                        color="primary"
+                        startIcon={data.collapsed ? <ExpandMore /> : <ExpandLess />}
                     >
-                        {data.collapsed ? (
-                            <ExpandLess fontSize="small" color="primary" />
-                        ) : (
-                            <ExpandMore fontSize="small" color="primary" />
-                        )}
-                    </IconButton>
+                        {data.collapsed ? "view children" : "hide children"}
+                    </Button>
                 </Box>
 
                 <Divider />
-                <Button variant="text" onClick={() => setIsOpen(!isOpen)}>
-                    View fields
+
+                <Button variant="text" onClick={() => setIsOpen(!isOpen)} color="secondary">
+                    {isOpen ? "hide fields" : "View fields"}
                 </Button>
+
+                {isOpen && (
+                    <>
+                        <Divider />
+                        <Stack>
+                            {data.fields.map(field => (
+                                <Box key={field.name} className="schema-node__row">
+                                    <Typography className="schema-node__field">
+                                        {field.name}
+                                    </Typography>
+
+                                    <Typography className="schema-node__type">
+                                        {field.type}
+                                    </Typography>
+                                </Box>
+                            ))}
+                        </Stack>
+                    </>
+                )}
 
                 <Handle position={Position.Bottom} type="source" />
             </Box>
-            <Dialog open={isOpen} onClose={onClose}>
-                <DialogTitle>{shortName} fields</DialogTitle>
-                <DialogContent>
-                    <Stack>
-                        {data.fields.map(field => (
-                            <Box key={field.name} className="schema-node__row">
-                                <Typography className="schema-node__field">{field.name}</Typography>
-
-                                <Typography className="schema-node__type">{field.type}</Typography>
-                            </Box>
-                        ))}
-                    </Stack>
-                </DialogContent>
-                <DialogActions>
-                    <Button variant="text" onClick={onClose}>
-                        Cancel
-                    </Button>
-                </DialogActions>
-            </Dialog>
         </>
     );
 };
