@@ -18,9 +18,8 @@ export function GraphView({ nodes, edges }: Props) {
     return (
         <div style={{ width: "100%", height: "100%" }}>
             <ReactFlow fitView nodes={nodes} edges={edges} nodeTypes={nodeTypes}>
-                <Background />
                 <Controls />
-                <MiniMap />
+                <Background />
             </ReactFlow>
         </div>
     );
