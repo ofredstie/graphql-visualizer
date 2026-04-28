@@ -5,8 +5,6 @@ export function buildVisibleGraph(
     edges: Edge[],
     collapsed: Set<string>,
 ) {
-    const nodeMap = new Map(nodes.map(n => [n.id, n]));
-
     const incoming = new Map<string, number>();
 
     nodes.forEach(n => incoming.set(n.id, 0));

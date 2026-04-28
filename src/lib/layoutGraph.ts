@@ -19,8 +19,8 @@ export async function layoutGraph(
         },
         children: nodes.map(node => ({
             id: node.id,
-            width: 260,
-            height: 220,
+            width: 400,
+            height: 200,
         })),
         edges: edges.map(edge => ({
             id: edge.id,
