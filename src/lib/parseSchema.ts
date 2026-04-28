@@ -31,7 +31,9 @@ export function parseSchema(schemaString: string): {
     const objectTypes = new Map<string, GraphQLObjectType>();
 
     Object.values(typeMap).forEach(type => {
-        if (!isObjectType(type) || type.name.startsWith("__")) return;
+        if (!isObjectType(type) || type.name.startsWith("__")) {
+            return;
+        }
 
         objectTypes.set(type.name, type);
 
@@ -58,7 +60,9 @@ export function parseSchema(schemaString: string): {
             const namedType = getNamedType(field.type);
             const targetTypeName = namedType.name;
 
-            if (!objectTypes.has(targetTypeName)) return;
+            if (!objectTypes.has(targetTypeName)) {
+                return;
+            }
 
             edges.push({
                 id: `${type.name}-${field.name}-${targetTypeName}`,
